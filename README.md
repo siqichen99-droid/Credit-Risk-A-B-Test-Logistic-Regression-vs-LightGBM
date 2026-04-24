@@ -1,6 +1,6 @@
 # Credit Risk A/B Test: Logistic Regression vs LightGBM
 
-> An end-to-end machine learning A/B testing framework for credit default prediction — comparing a traditional Logistic Regression scorecard against a LightGBM gradient boosting model on 300K+ real loan applicants. Validated with production-grade statistical methods and translated into quantified business impact.
+> An end-to-end machine learning A/B testing framework for credit default prediction - comparing a traditional Logistic Regression scorecard against a LightGBM gradient boosting model on 300K+ real loan applicants. Validated with production-grade statistical methods and translated into quantified business impact.
 
 **Author:** Siqi Chen | [LinkedIn](https://www.linkedin.com/in/siqi-chen-3159431b6) | siqichen99@gmail.com
 
@@ -10,18 +10,18 @@
 
 | Metric | Model A — Logistic Regression | Model B — LightGBM | Winner |
 |---|---|---|---|
-| AUC-ROC | 0.6992 | 0.7378 | ✅ LightGBM (+5.52%) |
-| Gini Coefficient | 0.3985 | 0.4757 | ✅ LightGBM |
-| KS Statistic | 0.2962 | 0.3547 | ✅ LightGBM |
-| Recall | 0.8479 | 0.8530 | ✅ LightGBM |
-| Precision | 0.1071 | 0.1204 | ✅ LightGBM |
+| AUC-ROC | 0.6992 | 0.7378 | LightGBM (+5.52%) |
+| Gini Coefficient | 0.3985 | 0.4757 | LightGBM |
+| KS Statistic | 0.2962 | 0.3547 | LightGBM |
+| Recall | 0.8479 | 0.8530 | LightGBM |
+| Precision | 0.1071 | 0.1204 | LightGBM |
 | Optimal Threshold | 0.261 | 0.168 | — |
-| Estimated Cost | $37.66M | $34.15M | ✅ LightGBM (-$3.51M) |
-| DeLong Z-stat | — | 18.40 | ✅ Significant |
-| P-value | — | p < 0.001 | ✅ Reject H₀ |
-| Cohen's d | — | 12.85 (Large) | ✅ Large effect |
+| Estimated Cost | $37.66M | $34.15M | LightGBM (-$3.51M) |
+| DeLong Z-stat | — | 18.40 | Significant |
+| P-value | — | p < 0.001 | Reject H₀ |
+| Cohen's d | — | 12.85 (Large) | Large effect |
 
-**Bottom line:** LightGBM at threshold 0.168 reduces estimated credit losses by **$3.51M on the test set (~$11.7M annualized)**, catches 38 more defaults, and approves 6,265 more creditworthy borrowers — validated with the DeLong test (p < 0.001) and 1,000-iteration bootstrap confidence intervals.
+**Bottom line:** LightGBM at threshold 0.168 reduces estimated credit losses by **$3.51M on the test set (~$11.7M annualized)**, catches 38 more defaults, and approves 6,265 more creditworthy borrowers, validated with the DeLong test (p < 0.001) and 1,000-iteration bootstrap confidence intervals.
 
 ---
 
@@ -62,7 +62,7 @@ credit_risk_ab_test/
 
 ## Methodology
 
-### Section 1 — Data & Feature Engineering (`01_eda.ipynb`)
+### Section 1: Data & Feature Engineering (`01_eda.ipynb`)
 
 **Dataset:** [Home Credit Default Risk](https://www.kaggle.com/c/home-credit-default-risk) — 307K loan applicants, 120+ features, ~8% default rate.
 
@@ -86,7 +86,7 @@ credit_risk_ab_test/
 
 ---
 
-### Section 2 — Model Development (`02_models.ipynb`)
+### Section 2: Model Development (`02_models.ipynb`)
 
 **Model A — Logistic Regression (Control)**
 - Industry standard in credit risk; every coefficient is auditable
@@ -104,14 +104,14 @@ credit_risk_ab_test/
 
 ---
 
-### Section 3 — A/B Test Statistical Framework (`03_ab_testing.ipynb`)
+### Section 3: A/B Test Statistical Framework (`03_ab_testing.ipynb`)
 
 #### DeLong Test
 Compares two correlated AUC-ROC curves on the same test population.
 
 - **H₀:** AUC(Model A) = AUC(Model B)
 - **H₁:** AUC(Model B) > AUC(Model A)
-- **Result:** Z = 18.40, p < 0.001 → **Reject H₀**
+- **Result:** Z = 18.40, p < 0.001 so we **Reject H₀**
 - LightGBM's AUC advantage is statistically significant and not due to chance
 
 > The extreme Z-statistic reflects both a genuinely large AUC difference (+0.0386) and a large test population (90K+ applicants) that gives the test high power to detect real differences.
@@ -121,9 +121,9 @@ Compares two correlated AUC-ROC curves on the same test population.
 
 | Model | AUC | 95% CI |
 |---|---|---|
-| Model A — Logistic Regression | 0.6992 | Entirely below Model B |
-| Model B — LightGBM | 0.7378 | Entirely above Model A |
-| Difference (B − A) | +0.0386 | Entirely above zero |
+| Model A - Logistic Regression | 0.6992 | Entirely below Model B |
+| Model B - LightGBM | 0.7378 | Entirely above Model A |
+| Difference (B - A) | +0.0386 | Entirely above zero |
 
 The CI for the AUC difference is entirely above zero — confirming LightGBM consistently outperforms Logistic Regression across all resamples.
 
@@ -142,15 +142,15 @@ Swept 200 threshold values (0.01–0.99) and minimized total cost (FN × $10,000
 
 | Model | Optimal Threshold | Minimum Cost |
 |---|---|---|
-| Model A — Logistic Regression | 0.261 | $37,662,500 |
-| Model B — LightGBM | 0.168 | $34,150,000 |
+| Model A - Logistic Regression | 0.261 | $37,662,500 |
+| Model B - LightGBM | 0.168 | $34,150,000 |
 | **Cost saving** | | **$3,512,500** |
 
 At calibrated thresholds, LightGBM wins on every metric: lower cost, higher recall, higher precision, more defaults caught, more good borrowers approved.
 
 ---
 
-### Section 4 — Business Impact (`04_business_dashboard.ipynb`)
+### Section 4: Business Impact (`04_business_dashboard.ipynb`)
 
 #### Performance at Optimal Thresholds
 
@@ -206,39 +206,14 @@ pip install numpy pandas scikit-learn lightgbm imbalanced-learn shap \
 
 ### 4. Run notebooks in order
 ```
-01_eda.ipynb               → generates X_train, X_test, y_train, y_test CSVs
-02_models.ipynb            → generates predictions.csv, model .pkl files
-03_ab_testing.ipynb        → generates section3_results.csv, dashboard PNG
-04_business_dashboard.ipynb → generates README assets, impact CSV
+01_eda.ipynb                generates X_train, X_test, y_train, y_test CSVs
+02_models.ipynb             generates predictions.csv, model .pkl files
+03_ab_testing.ipynb         generates section3_results.csv, dashboard PNG
+04_business_dashboard.ipynb generates README assets, impact CSV
 ```
 
 ---
 
-## Tech Stack
-
-| Category | Tools |
-|---|---|
-| Language | Python 3.12 |
-| Data | pandas, numpy |
-| ML Models | scikit-learn, LightGBM |
-| Explainability | SHAP |
-| Class Imbalance | imbalanced-learn (SMOTE) |
-| Statistical Tests | scipy (DeLong, bootstrap) |
-| Visualization | matplotlib, seaborn |
-| Environment | Jupyter Notebook, VS Code |
-
----
-
-## Key Skills Demonstrated
-
-- **A/B testing design** — control/treatment assignment, metric definition, guardrail metrics
-- **Statistical rigor** — DeLong test, bootstrap CI, Cohen's d, p-value interpretation
-- **Credit risk domain knowledge** — Gini coefficient, KS statistic, scorecard methodology, SOX awareness
-- **ML engineering** — feature engineering, SMOTE, early stopping, SHAP explainability
-- **Business translation** — threshold optimization, cost-sensitive evaluation, annualized impact modeling
-- **Production thinking** — model calibration, fairness audit recommendation, monitoring plan
-
----
 
 ## Resume Bullet
 
