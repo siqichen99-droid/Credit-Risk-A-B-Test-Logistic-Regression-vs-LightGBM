@@ -6,6 +6,10 @@
 
 ---
 
+```markdown
+![Project Summary](Outputs/section4_portfolio_hero.png)
+```
+
 ## Results at a Glance
 
 | Metric | Model A — Logistic Regression | Model B — LightGBM | Winner |
