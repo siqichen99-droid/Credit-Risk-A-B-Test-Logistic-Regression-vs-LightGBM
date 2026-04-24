@@ -7,7 +7,7 @@
 ---
 
 ```markdown
-![Project Summary](Outputs/section4_portfolio_hero.png)
+<img src="./Outputs/section4_portfolio_hero.png" width="100%">
 ```
 
 ## Results at a Glance
