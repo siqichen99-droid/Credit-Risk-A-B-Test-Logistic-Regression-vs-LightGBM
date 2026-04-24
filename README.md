@@ -213,10 +213,3 @@ pip install numpy pandas scikit-learn lightgbm imbalanced-learn shap \
 ```
 
 ---
-
-
-## Resume Bullet
-
-> *Developed end-to-end credit risk A/B testing framework comparing Logistic Regression (AUC 0.699, Gini 0.399) vs LightGBM (AUC 0.738, Gini 0.476) on 300K+ loan applicants; validated +5.5% AUC lift via DeLong test (Z=18.40, p<0.001, Cohen's d=12.85) and threshold optimization, projecting ~$11.7M annual reduction in credit losses; applied SHAP explainability to meet model interpretability requirements aligned with SOX compliance standards.*
-
----
