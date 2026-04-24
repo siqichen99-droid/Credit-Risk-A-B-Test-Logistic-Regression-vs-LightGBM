@@ -1,0 +1,19 @@
+```gitignore
+# Large data files
+Data/
+data/
+X_train.csv
+X_test.csv
+y_train.csv
+y_test.csv
+application_train.csv
+
+# Python environment
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# System files
+.DS_Store
+Thumbs.db
