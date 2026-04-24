@@ -6,9 +6,9 @@
 
 ---
 
-```markdown
-<img src="./Outputs/section4_portfolio_hero.png" width="100%">
-```
+<p align="center">
+  <img src="./Outputs/section4_portfolio_hero.png" width="95%">
+</p>
 
 ## Results at a Glance
 
