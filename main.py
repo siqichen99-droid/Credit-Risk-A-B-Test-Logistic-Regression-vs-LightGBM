@@ -125,6 +125,7 @@ def health():
     return {
         "status":         "healthy",
         "model_loaded":   model is not None,
+        "model_type":     type(model).__name__,
         "features_count": len(FEATURE_COLS)
     }
 
