@@ -31,7 +31,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy only what the API needs to run — not notebooks, data, or dev files
 COPY main.py .
 COPY Models/ ./models/
-COPY feature_cols.txt ./results/feature_cols.txt
+COPY Results/feature_cols.txt ./results/feature_cols.txt
 
 # ── Stage 5: Expose and run ───────────────────────────────────────────────────
 # Tell Docker this container listens on port 8000
