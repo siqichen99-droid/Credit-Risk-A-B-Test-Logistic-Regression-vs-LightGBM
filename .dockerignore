@@ -1,0 +1,51 @@
+# .dockerignore tells Docker which files NOT to copy into the container.
+# This keeps the image small and fast to build.
+# Think of it like .gitignore but for Docker.
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# Virtual environment — never copy this into Docker
+venv/
+env/
+.env
+
+# Jupyter notebooks — not needed at runtime
+notebooks/
+*.ipynb
+.ipynb_checkpoints/
+
+# Large data files — never include raw data in a Docker image
+data/
+*.csv
+application_train.csv
+X_train.csv
+X_test.csv
+y_train.csv
+y_test.csv
+
+# Development and documentation files
+*.md
+
+# Git
+.git/
+.gitignore
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+test_api.py
+
+# Output images
+outputs/
+*.png
+
+# MLflow runs — mounted as a volume at runtime, not baked into the image
+mlruns/

@@ -1,0 +1,10 @@
+aliases: {}
+creation_timestamp: 1778625553039
+deployment_job_id: null
+deployment_job_state: null
+description: 'LightGBM credit default prediction model. AUC 0.7378 | Gini 0.4757 |
+  KS 0.3547. Optimal threshold: 0.168. Validated via DeLong test (Z=18.40, p<0.001)
+  and 1000-iteration bootstrap CI. Projected annual cost saving vs baseline: $11.7M.'
+last_updated_timestamp: 1778625587611
+name: credit_risk_lightgbm
+workspace: default

@@ -1,0 +1,16 @@
+creation_timestamp: 1778625539766
+current_stage: None
+deployment_job_state: null
+description: null
+last_updated_timestamp: 1778625539766
+model_id: m-7fae1824442c45419852984f38f3e5d8
+name: credit_risk_logistic_regression
+run_id: d9936a4e333441db9308b14f654b6e15
+run_link: null
+source: models:/m-7fae1824442c45419852984f38f3e5d8
+status: READY
+status_message: null
+storage_location: file:c:/Users/hanto/OneDrive/Desktop/Siqi Chen Projects/ML/credit_risk_ab_test/Credit-Risk-A-B-Test-Logistic-Regression-vs-LightGBM/mlruns/197410562791891706/models/m-7fae1824442c45419852984f38f3e5d8/artifacts
+user_id: null
+version: 1
+workspace: default

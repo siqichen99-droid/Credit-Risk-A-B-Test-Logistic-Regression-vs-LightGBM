@@ -1,0 +1,8 @@
+artifact_location: file:c:/Users/hanto/OneDrive/Desktop/Siqi Chen Projects/ML/credit_risk_ab_test/Credit-Risk-A-B-Test-Logistic-Regression-vs-LightGBM/mlruns/197410562791891706
+creation_time: 1778625503127
+experiment_id: '197410562791891706'
+last_update_time: 1778625503127
+lifecycle_stage: active
+name: credit_risk_ab_test
+trace_location: null
+workspace: default

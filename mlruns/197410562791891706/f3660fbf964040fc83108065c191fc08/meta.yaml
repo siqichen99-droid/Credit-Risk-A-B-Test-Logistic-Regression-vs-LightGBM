@@ -1,0 +1,14 @@
+artifact_uri: file:c:/Users/hanto/OneDrive/Desktop/Siqi Chen Projects/ML/credit_risk_ab_test/Credit-Risk-A-B-Test-Logistic-Regression-vs-LightGBM/mlruns/197410562791891706/f3660fbf964040fc83108065c191fc08/artifacts
+end_time: 1778625584012
+entry_point_name: ''
+experiment_id: '197410562791891706'
+lifecycle_stage: active
+run_id: f3660fbf964040fc83108065c191fc08
+run_name: ab_test_statistical_validation
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1778625583843
+status: 3
+tags: []
+user_id: hanto

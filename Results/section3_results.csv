@@ -1,0 +1,2 @@
+model_a,model_b,auc_a,auc_b,auc_diff,ci_a_lower,ci_a_upper,ci_b_lower,ci_b_upper,ci_diff_lower,ci_diff_upper,delong_z,delong_p_two_sided,delong_p_one_sided,significant_005,cohens_d,effect_size,opt_threshold_a,opt_threshold_b,opt_cost_a,opt_cost_b,cost_saving_optimal
+Logistic Regression,LightGBM,0.6992,0.7378,0.0386,0.6931,0.7054,0.7325,0.7434,0.0346,0.0429,18.4024,0.0,0.0,True,12.8478,Large,0.261,0.168,37662500,34150000,3512500

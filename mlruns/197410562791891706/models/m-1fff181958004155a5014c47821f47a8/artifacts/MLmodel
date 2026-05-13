@@ -1,0 +1,54 @@
+artifact_path: file:c:/Users/hanto/OneDrive/Desktop/Siqi Chen Projects/ML/credit_risk_ab_test/Credit-Risk-A-B-Test-Logistic-Regression-vs-LightGBM/mlruns/197410562791891706/models/m-1fff181958004155a5014c47821f47a8/artifacts
+flavors:
+  lightgbm:
+    code: null
+    data: model.pkl
+    lgb_version: 4.6.0
+    model_class: lightgbm.sklearn.LGBMClassifier
+    serialization_format: cloudpickle
+    skops_trusted_types: null
+  python_function:
+    data: model.pkl
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.lightgbm
+    python_version: 3.14.4
+is_signature_from_type_hint: false
+mlflow_version: 3.12.0
+model_id: m-1fff181958004155a5014c47821f47a8
+model_size_bytes: 1770019
+model_uuid: m-1fff181958004155a5014c47821f47a8
+prompts: null
+run_id: 05094ed3a12a4ea396a3d87b3279cc75
+saved_input_example_info:
+  artifact_path: input_example.json
+  pandas_orient: split
+  serving_input_path: serving_input_example.json
+  type: dataframe
+signature:
+  inputs: '[{"type": "double", "name": "AMT_INCOME_TOTAL", "required": true}, {"type":
+    "double", "name": "AMT_CREDIT", "required": true}, {"type": "double", "name":
+    "AMT_ANNUITY", "required": true}, {"type": "double", "name": "AMT_GOODS_PRICE",
+    "required": true}, {"type": "long", "name": "DAYS_ID_PUBLISH", "required": true},
+    {"type": "double", "name": "DAYS_REGISTRATION", "required": true}, {"type": "double",
+    "name": "EXT_SOURCE_1", "required": true}, {"type": "double", "name": "EXT_SOURCE_2",
+    "required": true}, {"type": "double", "name": "EXT_SOURCE_3", "required": true},
+    {"type": "long", "name": "NAME_CONTRACT_TYPE", "required": true}, {"type": "long",
+    "name": "CODE_GENDER", "required": true}, {"type": "long", "name": "FLAG_OWN_CAR",
+    "required": true}, {"type": "long", "name": "FLAG_OWN_REALTY", "required": true},
+    {"type": "long", "name": "CNT_CHILDREN", "required": true}, {"type": "long", "name":
+    "NAME_INCOME_TYPE", "required": true}, {"type": "long", "name": "NAME_EDUCATION_TYPE",
+    "required": true}, {"type": "long", "name": "NAME_FAMILY_STATUS", "required":
+    true}, {"type": "long", "name": "REGION_RATING_CLIENT", "required": true}, {"type":
+    "double", "name": "DEBT_TO_INCOME", "required": true}, {"type": "double", "name":
+    "PAYMENT_TO_INCOME", "required": true}, {"type": "double", "name": "LOAN_TO_VALUE",
+    "required": true}, {"type": "double", "name": "CREDIT_TERM", "required": true},
+    {"type": "double", "name": "AGE_YEARS", "required": true}, {"type": "double",
+    "name": "EMPLOYED_YEARS", "required": true}, {"type": "double", "name": "EMPLOYMENT_TO_AGE",
+    "required": true}, {"type": "double", "name": "EXT_SOURCE_MEAN", "required": true},
+    {"type": "double", "name": "EXT_SOURCE_MIN", "required": true}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "float64", "shape": [-1]}}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2026-05-12 22:39:07.737152'

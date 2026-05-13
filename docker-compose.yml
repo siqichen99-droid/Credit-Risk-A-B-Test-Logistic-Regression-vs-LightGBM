@@ -1,0 +1,47 @@
+version: "3.9"
+
+# docker-compose lets you run multiple containers together with one command.
+# This file defines two services:
+#   1. api     — the FastAPI credit risk prediction service (port 8000)
+#   2. mlflow  — the MLflow tracking UI (port 5000)
+
+services:
+
+  # ── Service 1: FastAPI prediction API ──────────────────────────────────────
+  api:
+    build:
+      context: .           # build from the Dockerfile in the current directory
+      dockerfile: Dockerfile
+    container_name: credit_risk_api
+    ports:
+      - "8000:8000"        # map host port 8000 → container port 8000
+    volumes:
+      # Mount mlruns so the API can access MLflow artifacts if needed
+      - ./mlruns:/app/mlruns
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  # ── Service 2: MLflow tracking UI ──────────────────────────────────────────
+  mlflow:
+    image: python:3.11-slim       # reuse the same base image — no extra download
+    container_name: credit_risk_mlflow
+    working_dir: /mlflow
+    ports:
+      - "5000:5000"               # map host port 5000 → container port 5000
+    volumes:
+      - ./mlruns:/mlflow/mlruns   # mount local mlruns folder into the container
+    command: >
+      sh -c "pip install mlflow --quiet &&
+             python -m mlflow ui
+             --host 0.0.0.0
+             --port 5000
+             --backend-store-uri file:///mlflow/mlruns"
+    restart: unless-stopped
