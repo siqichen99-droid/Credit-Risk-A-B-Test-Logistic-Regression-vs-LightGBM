@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Credit Risk Prediction</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg:       #0D0F14;
+  --surface:  #13161E;
+  --card:     #181C26;
+  --border:   #252A38;
+  --border2:  #2E3447;
+  --text:     #E8EAF0;
+  --muted:    #6B738A;
+  --accent:   #4F8EF7;
+  --accent2:  #7B5CF5;
+  --green:    #22C55E;
+  --red:      #EF4444;
+  --amber:    #F59E0B;
+  --mono:     'DM Mono', monospace;
+  --head:     'Syne', sans-serif;
+  --body:     'DM Sans', sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:var(--body); min-height:100vh; }
+
+/* ── NAV ── */
+nav {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1rem 2.5rem; border-bottom:1px solid var(--border);
+  background:rgba(13,15,20,0.95); backdrop-filter:blur(12px);
+  position:sticky; top:0; z-index:100;
+}
+.nav-logo { font-family:var(--head); font-size:1rem; font-weight:700; letter-spacing:0.05em; color:var(--text); }
+.nav-logo span { color:var(--accent); }
+.nav-links { display:flex; gap:1.5rem; }
+.nav-links a { font-size:0.8rem; color:var(--muted); text-decoration:none; letter-spacing:0.08em; text-transform:uppercase; transition:color 0.2s; }
+.nav-links a:hover { color:var(--text); }
+.nav-badge { font-family:var(--mono); font-size:0.7rem; padding:3px 10px; border:1px solid var(--green); color:var(--green); border-radius:99px; }
+
+/* ── HERO ── */
+.hero {
+  padding:4rem 2.5rem 2rem;
+  max-width:1100px; margin:0 auto;
+  display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center;
+}
+.hero-label { font-family:var(--mono); font-size:0.7rem; color:var(--accent); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.75rem; }
+.hero-title { font-family:var(--head); font-size:2.8rem; font-weight:800; line-height:1.1; margin-bottom:1rem; }
+.hero-title em { font-style:normal; color:var(--accent); }
+.hero-desc { font-size:0.9rem; color:var(--muted); line-height:1.7; margin-bottom:1.5rem; }
+.hero-stats { display:flex; gap:2rem; }
+.stat-item { }
+.stat-val { font-family:var(--mono); font-size:1.4rem; font-weight:500; color:var(--text); }
+.stat-lbl { font-size:0.7rem; color:var(--muted); margin-top:2px; }
+.hero-visual { position:relative; }
+.hero-card {
+  background:var(--card); border:1px solid var(--border2);
+  border-radius:16px; padding:1.5rem; position:relative; overflow:hidden;
+}
+.hero-card::before {
+  content:''; position:absolute; top:-40px; right:-40px;
+  width:160px; height:160px; border-radius:50%;
+  background:radial-gradient(circle, rgba(79,142,247,0.15), transparent 70%);
+}
+.hc-label { font-family:var(--mono); font-size:0.65rem; color:var(--muted); letter-spacing:0.1em; margin-bottom:1rem; }
+.hc-row { display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0; border-bottom:1px solid var(--border); }
+.hc-row:last-child { border:none; }
+.hc-key { font-size:0.8rem; color:var(--muted); }
+.hc-val { font-family:var(--mono); font-size:0.85rem; color:var(--text); }
+.hc-val.green { color:var(--green); }
+.hc-val.red { color:var(--red); }
+
+/* ── MAIN LAYOUT ── */
+.main { max-width:1100px; margin:0 auto; padding:0 2.5rem 4rem; display:grid; grid-template-columns:380px 1fr; gap:2rem; }
+
+/* ── FORM ── */
+.form-panel {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:16px; padding:1.5rem; height:fit-content;
+  position:sticky; top:72px; max-height:calc(100vh - 90px); overflow-y:auto;
+}
+.form-panel::-webkit-scrollbar { width:4px; }
+.form-panel::-webkit-scrollbar-track { background:transparent; }
+.form-panel::-webkit-scrollbar-thumb { background:var(--border2); border-radius:99px; }
+.form-title { font-family:var(--head); font-size:1rem; font-weight:700; margin-bottom:0.25rem; }
+.form-sub { font-size:0.75rem; color:var(--muted); margin-bottom:1.5rem; }
+.section-label {
+  font-family:var(--mono); font-size:0.65rem; color:var(--accent); letter-spacing:0.12em;
+  text-transform:uppercase; margin:1.25rem 0 0.75rem; padding-bottom:0.5rem;
+  border-bottom:1px solid var(--border);
+}
+.field { margin-bottom:0.75rem; }
+.field label { font-size:0.72rem; color:var(--muted); display:block; margin-bottom:4px; }
+.field input, .field select {
+  width:100%; background:var(--card); border:1px solid var(--border2);
+  border-radius:8px; padding:8px 12px; color:var(--text);
+  font-family:var(--mono); font-size:0.8rem;
+  transition:border-color 0.2s, box-shadow 0.2s;
+  appearance:none;
+}
+.field input:focus, .field select:focus {
+  outline:none; border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(79,142,247,0.12);
+}
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; }
+.submit-btn {
+  width:100%; margin-top:1.25rem;
+  background:var(--accent); border:none; border-radius:10px;
+  padding:12px; color:#fff; font-family:var(--head); font-size:0.9rem;
+  font-weight:700; letter-spacing:0.04em; cursor:pointer;
+  transition:opacity 0.2s, transform 0.15s;
+  position:relative; overflow:hidden;
+}
+.submit-btn:hover { opacity:0.9; transform:translateY(-1px); }
+.submit-btn:active { transform:translateY(0); }
+.submit-btn.loading { opacity:0.7; pointer-events:none; }
+.preset-row { display:flex; gap:0.5rem; margin-bottom:1rem; }
+.preset-btn {
+  flex:1; padding:7px 0; font-size:0.7rem; font-family:var(--mono);
+  border-radius:7px; border:1px solid var(--border2); background:var(--card);
+  color:var(--muted); cursor:pointer; transition:all 0.2s; letter-spacing:0.04em;
+}
+.preset-btn:hover { border-color:var(--accent); color:var(--accent); }
+.preset-btn.low:hover { border-color:var(--green); color:var(--green); }
+.preset-btn.high:hover { border-color:var(--red); color:var(--red); }
+
+/* ── RESULTS PANEL ── */
+.results-panel { }
+.placeholder {
+  background:var(--surface); border:1px dashed var(--border2);
+  border-radius:16px; padding:4rem 2rem;
+  text-align:center; color:var(--muted);
+}
+.placeholder-icon { font-size:2.5rem; margin-bottom:1rem; opacity:0.4; }
+.placeholder p { font-size:0.85rem; line-height:1.6; }
+
+/* ── RESULT CARD ── */
+.result-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:16px; overflow:hidden; margin-bottom:1.5rem;
+  animation:slideUp 0.4s ease;
+}
+@keyframes slideUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+.result-header {
+  padding:1.5rem; display:flex; justify-content:space-between; align-items:center;
+  border-bottom:1px solid var(--border);
+}
+.result-header.approve { background:rgba(34,197,94,0.08); border-bottom-color:rgba(34,197,94,0.2); }
+.result-header.decline { background:rgba(239,68,68,0.08); border-bottom-color:rgba(239,68,68,0.2); }
+.decision-label { font-family:var(--head); font-size:0.7rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:4px; }
+.decision-label.approve { color:var(--green); }
+.decision-label.decline { color:var(--red); }
+.decision-text { font-family:var(--head); font-size:2rem; font-weight:800; }
+.prob-block { text-align:right; }
+.prob-val { font-family:var(--mono); font-size:2.4rem; font-weight:500; }
+.prob-val.low { color:var(--green); }
+.prob-val.medium { color:var(--amber); }
+.prob-val.high { color:var(--red); }
+.prob-lbl { font-size:0.7rem; color:var(--muted); }
+.result-meta { padding:1rem 1.5rem; display:flex; gap:2rem; }
+.meta-item { }
+.meta-lbl { font-size:0.7rem; color:var(--muted); margin-bottom:2px; }
+.meta-val { font-family:var(--mono); font-size:0.85rem; color:var(--text); }
+.risk-badge {
+  display:inline-block; padding:3px 12px; border-radius:99px;
+  font-family:var(--mono); font-size:0.75rem; font-weight:500;
+}
+.risk-badge.very-low  { background:rgba(34,197,94,0.15); color:var(--green); }
+.risk-badge.low       { background:rgba(34,197,94,0.1); color:#86efac; }
+.risk-badge.medium    { background:rgba(245,158,11,0.15); color:var(--amber); }
+.risk-badge.high      { background:rgba(239,68,68,0.12); color:#fca5a5; }
+.risk-badge.very-high { background:rgba(239,68,68,0.2); color:var(--red); }
+
+/* ── CHARTS ── */
+.charts-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
+.chart-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:16px; padding:1.25rem;
+  animation:slideUp 0.4s ease 0.1s both;
+}
+.chart-title { font-family:var(--head); font-size:0.85rem; font-weight:600; margin-bottom:0.25rem; }
+.chart-sub { font-size:0.72rem; color:var(--muted); margin-bottom:1rem; }
+.chart-wrap { position:relative; height:200px; }
+.chart-wrap-tall { position:relative; height:240px; }
+
+/* ── FACTORS TABLE ── */
+.factors-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:16px; padding:1.25rem;
+  animation:slideUp 0.4s ease 0.2s both;
+}
+.factor-row {
+  display:flex; align-items:center; gap:1rem;
+  padding:0.6rem 0; border-bottom:1px solid var(--border);
+}
+.factor-row:last-child { border:none; }
+.factor-name { font-size:0.8rem; color:var(--muted); width:180px; flex-shrink:0; }
+.factor-bar-wrap { flex:1; height:6px; background:var(--border); border-radius:99px; overflow:hidden; }
+.factor-bar { height:100%; border-radius:99px; transition:width 0.8s ease; }
+.factor-val { font-family:var(--mono); font-size:0.8rem; color:var(--text); width:60px; text-align:right; }
+.factor-signal { font-size:0.7rem; width:60px; text-align:right; }
+.factor-signal.risk { color:var(--red); }
+.factor-signal.safe { color:var(--green); }
+.factor-signal.neutral { color:var(--muted); }
+
+/* ── GAUGE ── */
+.gauge-wrap { position:relative; height:180px; display:flex; align-items:center; justify-content:center; }
+.gauge-center { position:absolute; text-align:center; top:55%; transform:translateY(-50%); }
+.gauge-pct { font-family:var(--mono); font-size:1.8rem; font-weight:500; }
+.gauge-lbl { font-size:0.7rem; color:var(--muted); }
+
+/* ── LOADING ── */
+.spinner { display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; margin-right:8px; vertical-align:middle; }
+@keyframes spin { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Credit<span>Risk</span> API</div>
+  <div class="nav-links">
+    <a href="/docs">API Docs</a>
+    <a href="/health">Health</a>
+  </div>
+  <div class="nav-badge">LIVE</div>
+</nav>
+
+<div class="hero">
+  <div>
+    <div class="hero-label">LightGBM · Home Credit · 307K Applicants</div>
+    <h1 class="hero-title">Credit Default<br><em>Risk Predictor</em></h1>
+    <p class="hero-desc">Enter applicant details to receive an instant default probability, risk tier, and lending decision — powered by a LightGBM model validated with DeLong statistical testing (Z=18.40, p&lt;0.001).</p>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-val">0.738</div><div class="stat-lbl">AUC-ROC</div></div>
+      <div class="stat-item"><div class="stat-val">0.168</div><div class="stat-lbl">Threshold</div></div>
+      <div class="stat-item"><div class="stat-val">$11.7M</div><div class="stat-lbl">Annual saving</div></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-card">
+      <div class="hc-label">SAMPLE · HIGH RISK APPLICANT</div>
+      <div class="hc-row"><span class="hc-key">Income / Loan</span><span class="hc-val">$45K / $360K</span></div>
+      <div class="hc-row"><span class="hc-key">Debt-to-Income</span><span class="hc-val red">8.0× ↑</span></div>
+      <div class="hc-row"><span class="hc-key">Bureau Score</span><span class="hc-val red">0.18 ↓</span></div>
+      <div class="hc-row"><span class="hc-key">Employment</span><span class="hc-val red">6 months ↑</span></div>
+      <div class="hc-row"><span class="hc-key">Decision</span><span class="hc-val red">DECLINE</span></div>
+      <div class="hc-row"><span class="hc-key">Default Prob</span><span class="hc-val red">~38%</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- FORM -->
+  <div class="form-panel">
+    <div class="form-title">Applicant Assessment</div>
+    <div class="form-sub">Fill in applicant details or load a preset profile</div>
+
+    <div class="preset-row">
+      <button class="preset-btn low" onclick="loadPreset('low')">Low Risk</button>
+      <button class="preset-btn" onclick="loadPreset('medium')">Medium</button>
+      <button class="preset-btn high" onclick="loadPreset('high')">High Risk</button>
+    </div>
+
+    <form id="predictForm">
+      <div class="section-label">Financial Profile</div>
+      <div class="field-row">
+        <div class="field"><label>Annual Income ($)</label><input type="number" id="AMT_INCOME_TOTAL" value="135000" required></div>
+        <div class="field"><label>Loan Amount ($)</label><input type="number" id="AMT_CREDIT" value="450000" required></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Annual Payment ($)</label><input type="number" id="AMT_ANNUITY" value="22500" required></div>
+        <div class="field"><label>Goods Price ($)</label><input type="number" id="AMT_GOODS_PRICE" value="400000" required></div>
+      </div>
+
+      <div class="section-label">Credit Bureau Scores (0–1)</div>
+      <div class="field-row">
+        <div class="field"><label>EXT Source 1</label><input type="number" id="EXT_SOURCE_1" value="0.51" step="0.01" min="0" max="1" required></div>
+        <div class="field"><label>EXT Source 2</label><input type="number" id="EXT_SOURCE_2" value="0.59" step="0.01" min="0" max="1" required></div>
+      </div>
+      <div class="field"><label>EXT Source 3</label><input type="number" id="EXT_SOURCE_3" value="0.49" step="0.01" min="0" max="1" required></div>
+
+      <div class="section-label">Applicant Details</div>
+      <div class="field-row">
+        <div class="field"><label>Age (years)</label><input type="number" id="AGE_YEARS" value="35" min="18" max="70" required></div>
+        <div class="field"><label>Employed (years)</label><input type="number" id="EMPLOYED_YEARS" value="5" min="0" max="50" required></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Gender</label>
+          <select id="CODE_GENDER"><option value="M">Male</option><option value="F">Female</option></select>
+        </div>
+        <div class="field"><label>Children</label><input type="number" id="CNT_CHILDREN" value="0" min="0"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Owns Car</label>
+          <select id="FLAG_OWN_CAR"><option value="N">No</option><option value="Y">Yes</option></select>
+        </div>
+        <div class="field"><label>Owns Realty</label>
+          <select id="FLAG_OWN_REALTY"><option value="Y">Yes</option><option value="N">No</option></select>
+        </div>
+      </div>
+
+      <div class="section-label">Loan & Region</div>
+      <div class="field"><label>Contract Type</label>
+        <select id="NAME_CONTRACT_TYPE">
+          <option value="Cash loans">Cash Loans</option>
+          <option value="Revolving loans">Revolving Loans</option>
+        </select>
+      </div>
+      <div class="field"><label>Income Type</label>
+        <select id="NAME_INCOME_TYPE">
+          <option value="Working">Working</option>
+          <option value="Commercial associate">Commercial Associate</option>
+          <option value="Pensioner">Pensioner</option>
+          <option value="State servant">State Servant</option>
+        </select>
+      </div>
+      <div class="field"><label>Education</label>
+        <select id="NAME_EDUCATION_TYPE">
+          <option value="Secondary / secondary special">Secondary</option>
+          <option value="Higher education">Higher Education</option>
+          <option value="Incomplete higher">Incomplete Higher</option>
+          <option value="Lower secondary">Lower Secondary</option>
+        </select>
+      </div>
+      <div class="field"><label>Family Status</label>
+        <select id="NAME_FAMILY_STATUS">
+          <option value="Married">Married</option>
+          <option value="Single / not married">Single</option>
+          <option value="Civil marriage">Civil Marriage</option>
+          <option value="Separated">Separated</option>
+          <option value="Widow">Widow</option>
+        </select>
+      </div>
+      <div class="field"><label>Region Risk Rating (1=Low, 3=High)</label>
+        <select id="REGION_RATING_CLIENT">
+          <option value="1">1 — Low risk region</option>
+          <option value="2" selected>2 — Medium risk region</option>
+          <option value="3">3 — High risk region</option>
+        </select>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">
+        Assess Default Risk
+      </button>
+    </form>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-panel" id="resultsPanel">
+    <div class="placeholder" id="placeholder">
+      <div class="placeholder-icon">◈</div>
+      <p>Enter applicant details and click<br><strong>Assess Default Risk</strong><br>to see the prediction, risk breakdown,<br>and feature analysis.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_BASE = '';
+
+const PRESETS = {
+  low: {
+    AMT_INCOME_TOTAL:270000, AMT_CREDIT:450000, AMT_ANNUITY:22500, AMT_GOODS_PRICE:450000,
+    AGE_YEARS:44, EMPLOYED_YEARS:10, EXT_SOURCE_1:0.72, EXT_SOURCE_2:0.80, EXT_SOURCE_3:0.75,
+    NAME_CONTRACT_TYPE:'Cash loans', CODE_GENDER:'F', FLAG_OWN_CAR:'Y', FLAG_OWN_REALTY:'Y',
+    CNT_CHILDREN:0, NAME_INCOME_TYPE:'Working', NAME_EDUCATION_TYPE:'Higher education',
+    NAME_FAMILY_STATUS:'Married', REGION_RATING_CLIENT:1
+  },
+  medium: {
+    AMT_INCOME_TOTAL:135000, AMT_CREDIT:450000, AMT_ANNUITY:22500, AMT_GOODS_PRICE:400000,
+    AGE_YEARS:35, EMPLOYED_YEARS:5, EXT_SOURCE_1:0.51, EXT_SOURCE_2:0.59, EXT_SOURCE_3:0.49,
+    NAME_CONTRACT_TYPE:'Cash loans', CODE_GENDER:'M', FLAG_OWN_CAR:'N', FLAG_OWN_REALTY:'Y',
+    CNT_CHILDREN:0, NAME_INCOME_TYPE:'Working', NAME_EDUCATION_TYPE:'Secondary / secondary special',
+    NAME_FAMILY_STATUS:'Married', REGION_RATING_CLIENT:2
+  },
+  high: {
+    AMT_INCOME_TOTAL:45000, AMT_CREDIT:360000, AMT_ANNUITY:36000, AMT_GOODS_PRICE:300000,
+    AGE_YEARS:25, EMPLOYED_YEARS:0.5, EXT_SOURCE_1:0.18, EXT_SOURCE_2:0.22, EXT_SOURCE_3:0.15,
+    NAME_CONTRACT_TYPE:'Cash loans', CODE_GENDER:'M', FLAG_OWN_CAR:'N', FLAG_OWN_REALTY:'N',
+    CNT_CHILDREN:2, NAME_INCOME_TYPE:'Working', NAME_EDUCATION_TYPE:'Lower secondary',
+    NAME_FAMILY_STATUS:'Single / not married', REGION_RATING_CLIENT:3
+  }
+};
+
+function loadPreset(type) {
+  const p = PRESETS[type];
+  Object.keys(p).forEach(k => {
+    const el = document.getElementById(k);
+    if (el) el.value = p[k];
+  });
+}
+
+function buildPayload() {
+  const age   = parseFloat(document.getElementById('AGE_YEARS').value) || 35;
+  const emp   = parseFloat(document.getElementById('EMPLOYED_YEARS').value) || 5;
+  return {
+    AMT_INCOME_TOTAL:    parseFloat(document.getElementById('AMT_INCOME_TOTAL').value),
+    AMT_CREDIT:          parseFloat(document.getElementById('AMT_CREDIT').value),
+    AMT_ANNUITY:         parseFloat(document.getElementById('AMT_ANNUITY').value),
+    AMT_GOODS_PRICE:     parseFloat(document.getElementById('AMT_GOODS_PRICE').value),
+    DAYS_BIRTH:          -(age * 365),
+    DAYS_EMPLOYED:       -(emp * 365),
+    DAYS_ID_PUBLISH:     -1000,
+    DAYS_REGISTRATION:   -3000,
+    EXT_SOURCE_1:        parseFloat(document.getElementById('EXT_SOURCE_1').value),
+    EXT_SOURCE_2:        parseFloat(document.getElementById('EXT_SOURCE_2').value),
+    EXT_SOURCE_3:        parseFloat(document.getElementById('EXT_SOURCE_3').value),
+    NAME_CONTRACT_TYPE:  document.getElementById('NAME_CONTRACT_TYPE').value,
+    CODE_GENDER:         document.getElementById('CODE_GENDER').value,
+    FLAG_OWN_CAR:        document.getElementById('FLAG_OWN_CAR').value,
+    FLAG_OWN_REALTY:     document.getElementById('FLAG_OWN_REALTY').value,
+    CNT_CHILDREN:        parseInt(document.getElementById('CNT_CHILDREN').value),
+    NAME_INCOME_TYPE:    document.getElementById('NAME_INCOME_TYPE').value,
+    NAME_EDUCATION_TYPE: document.getElementById('NAME_EDUCATION_TYPE').value,
+    NAME_FAMILY_STATUS:  document.getElementById('NAME_FAMILY_STATUS').value,
+    REGION_RATING_CLIENT:parseInt(document.getElementById('REGION_RATING_CLIENT').value)
+  };
+}
+
+function getRiskClass(prob) {
+  if (prob < 0.10) return 'very-low';
+  if (prob < 0.20) return 'low';
+  if (prob < 0.35) return 'medium';
+  if (prob < 0.50) return 'high';
+  return 'very-high';
+}
+function getRiskLabel(prob) {
+  if (prob < 0.10) return 'Very Low';
+  if (prob < 0.20) return 'Low';
+  if (prob < 0.35) return 'Medium';
+  if (prob < 0.50) return 'High';
+  return 'Very High';
+}
+function getProbClass(prob) {
+  if (prob < 0.168) return 'low';
+  if (prob < 0.35)  return 'medium';
+  return 'high';
+}
+function getGaugeColor(prob) {
+  if (prob < 0.168) return '#22C55E';
+  if (prob < 0.35)  return '#F59E0B';
+  return '#EF4444';
+}
+
+let gaugeChart = null;
+let radarChart = null;
+let barChart   = null;
+
+function renderResults(data, payload) {
+  const prob      = data.default_probability;
+  const decision  = data.decision;
+  const riskClass = getRiskClass(prob);
+  const riskLabel = getRiskLabel(prob);
+  const probClass = getProbClass(prob);
+  const pct       = (prob * 100).toFixed(1);
+  const isApprove = decision === 'Approve';
+
+  // Derived metrics
+  const dti  = (payload.AMT_CREDIT / (payload.AMT_INCOME_TOTAL + 1)).toFixed(2);
+  const pti  = (payload.AMT_ANNUITY / (payload.AMT_INCOME_TOTAL + 1) * 100).toFixed(1);
+  const ltv  = (payload.AMT_CREDIT / (payload.AMT_GOODS_PRICE + 1)).toFixed(2);
+  const extm = ((payload.EXT_SOURCE_1 + payload.EXT_SOURCE_2 + payload.EXT_SOURCE_3) / 3).toFixed(2);
+
+  document.getElementById('placeholder')?.remove();
+
+  document.getElementById('resultsPanel').innerHTML = `
+    <!-- Decision Card -->
+    <div class="result-card">
+      <div class="result-header ${isApprove ? 'approve' : 'decline'}">
+        <div>
+          <div class="decision-label ${isApprove ? 'approve' : 'decline'}">${isApprove ? '✓ Approved' : '✗ Declined'}</div>
+          <div class="decision-text">${decision}</div>
+        </div>
+        <div class="prob-block">
+          <div class="prob-val ${probClass}">${pct}%</div>
+          <div class="prob-lbl">default probability</div>
+        </div>
+      </div>
+      <div class="result-meta">
+        <div class="meta-item"><div class="meta-lbl">Risk Tier</div><div class="meta-val"><span class="risk-badge ${riskClass}">${riskLabel}</span></div></div>
+        <div class="meta-item"><div class="meta-lbl">Threshold</div><div class="meta-val">${data.threshold_used}</div></div>
+        <div class="meta-item"><div class="meta-lbl">Model</div><div class="meta-val">${data.model_version}</div></div>
+      </div>
+    </div>
+
+    <!-- Charts row -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">Default Probability</div>
+        <div class="chart-sub">Position on risk scale</div>
+        <div class="gauge-wrap">
+          <canvas id="gaugeChart"></canvas>
+          <div class="gauge-center">
+            <div class="gauge-pct" style="color:${getGaugeColor(prob)}">${pct}%</div>
+            <div class="gauge-lbl">probability</div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Risk Profile Comparison</div>
+        <div class="chart-sub">vs typical approved / declined</div>
+        <div class="chart-wrap-tall"><canvas id="radarChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Factor bars -->
+    <div class="factors-card">
+      <div class="chart-title" style="margin-bottom:0.25rem">Key Risk Factors</div>
+      <div class="chart-sub">How each metric contributes to the risk assessment</div>
+      ${renderFactors(dti, pti, ltv, extm, payload, prob)}
+    </div>
+
+    <!-- Bar chart -->
+    <div class="chart-card" style="margin-top:1.5rem;animation:slideUp 0.4s ease 0.3s both">
+      <div class="chart-title">Financial Ratios vs Benchmarks</div>
+      <div class="chart-sub">Applicant values compared to typical approved applicant</div>
+      <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+    </div>
+  `;
+
+  // Draw gauge
+  if (gaugeChart) gaugeChart.destroy();
+  const gc = document.getElementById('gaugeChart').getContext('2d');
+  gaugeChart = new Chart(gc, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [prob, 1 - prob],
+        backgroundColor: [getGaugeColor(prob), '#252A38'],
+        borderWidth: 0,
+        circumference: 220,
+        rotation: -110,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      cutout: '75%',
+      animation: { animateRotate: true, duration: 1000 }
+    }
+  });
+
+  // Draw radar
+  if (radarChart) radarChart.destroy();
+  const empYrs = Math.abs(payload.DAYS_EMPLOYED / 365);
+  const rc = document.getElementById('radarChart').getContext('2d');
+  radarChart = new Chart(rc, {
+    type: 'radar',
+    data: {
+      labels: ['Bureau Score', 'Employment', 'Affordability', 'Collateral', 'Income Level'],
+      datasets: [
+        {
+          label: 'This Applicant',
+          data: [
+            Math.min(parseFloat(extm) * 100, 100),
+            Math.min(empYrs / 10 * 100, 100),
+            Math.max(0, 100 - parseFloat(pti) * 3),
+            Math.min((1 / parseFloat(ltv)) * 100, 100),
+            Math.min(payload.AMT_INCOME_TOTAL / 5000, 100)
+          ],
+          borderColor: isApprove ? '#22C55E' : '#EF4444',
+          backgroundColor: isApprove ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)',
+          borderWidth: 2, pointRadius: 3
+        },
+        {
+          label: 'Typical Approved',
+          data: [65, 60, 72, 85, 60],
+          borderColor: '#4F8EF7',
+          backgroundColor: 'rgba(79,142,247,0.06)',
+          borderWidth: 1.5, borderDash: [4,2], pointRadius: 2
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        r: {
+          min: 0, max: 100,
+          ticks: { display: false },
+          grid: { color: '#252A38' },
+          angleLines: { color: '#252A38' },
+          pointLabels: { color: '#6B738A', font: { size: 10, family: 'DM Mono' } }
+        }
+      },
+      plugins: {
+        legend: { labels: { color: '#6B738A', font: { size: 10 }, boxWidth: 12 } }
+      }
+    }
+  });
+
+  // Draw bar chart
+  if (barChart) barChart.destroy();
+  const bc = document.getElementById('barChart').getContext('2d');
+  barChart = new Chart(bc, {
+    type: 'bar',
+    data: {
+      labels: ['Debt/Income', 'Payment/Income %', 'Loan/Value', 'Bureau Score (avg)'],
+      datasets: [
+        {
+          label: 'This Applicant',
+          data: [parseFloat(dti), parseFloat(pti), parseFloat(ltv), parseFloat(extm)],
+          backgroundColor: isApprove ? 'rgba(34,197,94,0.7)' : 'rgba(239,68,68,0.7)',
+          borderRadius: 6, borderSkipped: false
+        },
+        {
+          label: 'Typical Approved',
+          data: [2.8, 13.5, 1.05, 0.60],
+          backgroundColor: 'rgba(79,142,247,0.5)',
+          borderRadius: 6, borderSkipped: false
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        x: { grid: { color: '#252A38' }, ticks: { color: '#6B738A', font: { size: 10 } } },
+        y: { grid: { color: '#252A38' }, ticks: { color: '#6B738A', font: { size: 10 } } }
+      },
+      plugins: {
+        legend: { labels: { color: '#6B738A', font: { size: 10 }, boxWidth: 12 } }
+      }
+    }
+  });
+}
+
+function renderFactors(dti, pti, ltv, extm, payload, prob) {
+  const empYrs = Math.abs(payload.DAYS_EMPLOYED / 365).toFixed(1);
+  const factors = [
+    { name: 'Bureau Score (avg)', val: extm, max: 1.0, display: extm, signal: parseFloat(extm) > 0.5 ? 'safe' : 'risk', signalText: parseFloat(extm) > 0.5 ? 'Low risk' : 'High risk', color: parseFloat(extm) > 0.5 ? '#22C55E' : '#EF4444', pct: parseFloat(extm) * 100 },
+    { name: 'Debt-to-Income Ratio', val: dti, max: 10, display: dti+'×', signal: parseFloat(dti) < 3 ? 'safe' : 'risk', signalText: parseFloat(dti) < 3 ? 'Healthy' : 'Elevated', color: parseFloat(dti) < 3 ? '#22C55E' : '#EF4444', pct: Math.min(parseFloat(dti) / 10 * 100, 100) },
+    { name: 'Payment / Income', val: pti, max: 50, display: pti+'%', signal: parseFloat(pti) < 20 ? 'safe' : 'risk', signalText: parseFloat(pti) < 20 ? 'Affordable' : 'Strained', color: parseFloat(pti) < 20 ? '#22C55E' : '#EF4444', pct: Math.min(parseFloat(pti) / 50 * 100, 100) },
+    { name: 'Loan-to-Value', val: ltv, max: 2, display: ltv, signal: parseFloat(ltv) < 1.1 ? 'safe' : 'risk', signalText: parseFloat(ltv) < 1.1 ? 'Covered' : 'Exposed', color: parseFloat(ltv) < 1.1 ? '#22C55E' : '#EF4444', pct: Math.min(parseFloat(ltv) / 2 * 100, 100) },
+    { name: 'Employment (years)', val: empYrs, max: 15, display: empYrs+'yr', signal: parseFloat(empYrs) > 3 ? 'safe' : 'risk', signalText: parseFloat(empYrs) > 3 ? 'Stable' : 'Short tenure', color: parseFloat(empYrs) > 3 ? '#22C55E' : '#EF4444', pct: Math.min(parseFloat(empYrs) / 15 * 100, 100) },
+  ];
+  return factors.map(f => `
+    <div class="factor-row">
+      <div class="factor-name">${f.name}</div>
+      <div class="factor-bar-wrap">
+        <div class="factor-bar" style="width:${f.pct}%;background:${f.color}"></div>
+      </div>
+      <div class="factor-val">${f.display}</div>
+      <div class="factor-signal ${f.signal}">${f.signalText}</div>
+    </div>
+  `).join('');
+}
+
+document.getElementById('predictForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.classList.add('loading');
+  btn.innerHTML = '<span class="spinner"></span>Analyzing...';
+
+  try {
+    const payload = buildPayload();
+    const res = await fetch(`${API_BASE}/predict`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    renderResults(data, payload);
+  } catch (err) {
+    alert('Error: ' + err.message + '\n\nMake sure the API server is running.');
+  } finally {
+    btn.classList.remove('loading');
+    btn.innerHTML = 'Assess Default Risk';
+  }
+});
+</script>
+</body>
+</html>
