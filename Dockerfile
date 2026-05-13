@@ -31,6 +31,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy only what the API needs to run — not notebooks, data, or dev files
 COPY main.py .
 COPY Models/ ./models/
+COPY ui.html .
 COPY Results/feature_cols.txt ./results/feature_cols.txt
 
 # ── Stage 5: Expose and run ───────────────────────────────────────────────────
