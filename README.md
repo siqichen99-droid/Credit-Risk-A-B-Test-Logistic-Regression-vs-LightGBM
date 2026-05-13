@@ -329,12 +329,6 @@ python -m mlflow ui --port 5000
 
 ---
 
-## Resume Bullet
-
-> *Developed end-to-end credit risk A/B testing framework and deployed as a live REST API — FastAPI + Docker + Render at https://credit-risk-api-69lg.onrender.com; LightGBM vs Logistic Regression on 300K+ loan applicants, DeLong test Z=18.40 p<0.001, ~$11.7M projected annual loss reduction; experiment tracking and model versioning via MLflow.*
-
----
-
 ## License
 
 MIT License — free to use and adapt with attribution.
